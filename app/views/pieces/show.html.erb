@@ -1,0 +1,113 @@
+<div class="row">
+  <div class="span12">
+    <div class="hero-unit">
+      <h1><%= @piece.name %></h1>
+      <p>
+        <%= link_to 'Edit', edit_piece_path %> |
+        Remove
+      </p>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="span6">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce aliquam quam vel turpis pulvinar consequat. Pellentesque sodales, neque vitae cursus facilisis, urna elit ullamcorper enim, vestibulum viverra odio nulla in lorem. Aenean non sapien libero, sit amet rutrum sem. Aliquam convallis turpis malesuada neque suscipit et bibendum lorem vestibulum. Mauris orci augue, mollis ut accumsan non, semper sit amet nulla. Nulla iaculis lacus non odio scelerisque congue. Donec ultrices interdum purus, eu facilisis eros sollicitudin at. Praesent ornare purus vitae nunc pretium semper. Sed laoreet vulputate interdum. Nulla sed lacus sed felis aliquam accumsan sed at justo. Morbi placerat est quis odio egestas volutpat. Quisque sit amet lectus eu ante dignissim varius. Curabitur sollicitudin placerat eros id tincidunt. Fusce tincidunt dolor a turpis posuere placerat bibendum eros scelerisque. Fusce lobortis est eget justo fringilla semper. Sed tempor, quam in egestas mattis, ipsum elit mollis leo, nec semper felis erat sed libero.</p>
+
+    <p>Nullam ipsum elit, venenatis non cursus lobortis, laoreet in lectus. Ut egestas metus in dolor laoreet lacinia. Praesent a arcu in est tristique malesuada. Phasellus luctus consequat mollis. Integer neque quam, lobortis in cursus non, suscipit a magna. Aliquam at urna lectus, ut egestas neque. Mauris vitae arcu enim. Nulla facilisi. Etiam rutrum commodo nisl in lobortis. Phasellus a risus a justo lacinia tincidunt. Suspendisse et nulla ipsum. Quisque pretium volutpat lectus, molestie dignissim risus dapibus vel. Ut venenatis luctus leo vel convallis.</p>
+
+    <p>Nam a lectus sem, eu elementum eros. Mauris eleifend consectetur lobortis. Vestibulum dictum, nunc non posuere tempus, metus risus mollis lorem, a condimentum mi justo et risus. Nullam rutrum lectus eu diam luctus tempus. Ut in odio vel nunc cursus ultrices. Ut leo nulla, aliquam vel vestibulum sit amet, elementum quis erat. Donec malesuada, purus ut commodo convallis, tellus est dignissim enim, ornare sagittis libero purus quis neque. Curabitur sit amet mauris leo, quis eleifend mi. Sed augue turpis, bibendum sed malesuada eget, viverra eget mauris. Duis faucibus mattis tempus.</p>
+
+    <p>Aenean mattis enim quis enim gravida aliquam. Sed pharetra imperdiet orci. Sed id quam nulla. Ut ullamcorper, dui eget volutpat hendrerit, metus dolor laoreet mauris, ac lobortis massa nunc sed odio. Suspendisse sit amet nunc vel metus vulputate tincidunt vitae id turpis. Etiam ante odio, fringilla ac pellentesque ut, facilisis in enim. Nunc augue ipsum, dignissim a imperdiet eget, iaculis a urna. Maecenas ante lacus, lacinia quis dictum id, molestie sit amet diam. Proin tincidunt augue ut justo aliquet tempor. Praesent blandit suscipit venenatis.</p>
+
+    <p>Suspendisse viverra tempor felis, quis mattis ligula fermentum at. Sed non turpis eget lectus vehicula mattis. Suspendisse potenti. In tempor odio non orci euismod vestibulum. Sed nec libero dui. Quisque sit amet pretium tellus. Aliquam erat volutpat. Sed mauris lectus, cursus ac porta quis, tincidunt in metus. Integer sodales sollicitudin tellus, sit amet lobortis augue interdum sit amet. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce vehicula quam non nibh cursus lacinia.</p>
+  </div>
+  <div class="span6">
+    <div pub-key="pub-a06a2405-a276-4f1b-91ce-5bb78d0f3431" sub-key="sub-07da764a-ff98-11e1-9510-d18d7b6ca35d" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
+    <div class="blurbs-box">
+      <div class="input-box">
+        <textarea class="input-xlarge span6" name="new-message" id="message-field" placeholder="Type a message..." rows="3"></textarea>
+      </div>
+      <br>
+      <div class="convo-box">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .message-sender{
+    font-weight: bold;
+  }
+  .message-date{
+    font-size: 90%;
+    margin-right: 0.5em;
+    font-style: italic;
+  }
+</style>
+<script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
+<script>(function(){
+  // Channel to be provided by CaseBlurb db. Probably use case_id.
+  var channel = "<%= @piece.name %> <%= @piece.lat.to_s %>";
+  // Provide username too for posting to convo box:
+  var user = "<%= session[:user_name]%>";
+  var msgBox = $('#message-field');
+ 
+    // LISTEN FOR MESSAGES
+    PUBNUB.subscribe({
+        channel    : channel,      // CONNECT TO THIS CHANNEL.
+ 
+        restore    : false,              // STAY CONNECTED, EVEN WHEN BROWSER IS CLOSED
+                                         // OR WHEN PAGE CHANGES.
+ 
+        callback   : function(message) { // RECEIVED A MESSAGE.
+            $('.convo-box').prepend('\
+            <div class = "well">\
+              <div class="row-fluid">\
+              <span class="message-sender">'+message.sender+'</span>\
+              <span class="message-date pull-right"><%= Time.now %></span>\
+              </div>\
+              <div class="row-fluid">\
+              <span class="message-text">'+message.text+'</span>\
+              </div>\
+            </div>')
+        },
+ 
+        disconnect : function() {        // LOST CONNECTION.
+            $('.convo-box').prepend(
+                "<div class=\"well\">\
+                  Error: Connection Lost." +
+                  "Will auto-reconnect when Online.\
+                </div>"
+            )
+        },
+ 
+        reconnect  : function() {        // CONNECTION RESTORED.
+            $('.convo-box').append("Connection restored!")
+        },
+ 
+        connect    : function() {        // CONNECTION ESTABLISHED.
+ 
+            PUBNUB.publish({             // SEND A MESSAGE.
+                channel : channel,
+                message : {sender: '[Announcement]', text: user + " is now online.", date: '[date]'}
+            })
+ 
+        }
+    })
+    
+    $('#message-field').keyup(function(e) {
+    if((e.which) === 13){
+      PUBNUB.publish({
+        channel : channel, 
+        message : {sender: user,
+          text: msgBox.val(),
+          date:'[date]'
+        },
+        callback: function(resp){
+          msgBox.val('');
+        }
+      });
+    }
+  });
+})();</script>

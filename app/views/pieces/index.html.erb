@@ -1,3 +1,18 @@
 <div class="row">
-  <%= gmaps4rails(@markers) %>
+  <div class="span12">
+    <div class="hero-unit">
+      <h1>TC Project</h1>
+      <p>Bass Museum of Art<p>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="span12">
+    <%= gmaps4rails(@markers) %>
+  </div>
+</div>
+<div class="row">
+  <div class="span12">
+    <p><%= link_to 'Add', new_piece_path %></p>
+  </div>
 </div>
