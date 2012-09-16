@@ -1,9 +1,7 @@
 class User < ActiveRecord::Base
-  attr_accessible :name, :password, :password_confirmation, :latitude, :longitude
+  attr_accessible :name, :password, :password_confirmation
 
   validates :name, presence: true
 
   has_secure_password
-
-  acts_as_gmappable
 end
