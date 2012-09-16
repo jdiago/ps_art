@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
     if user and user.authenticate(params[:password])
       session[:user_id] = user.id
       session[:user_name] = user.name
-      redirect_to '/'
+      redirect_to pieces_path
     else
       redirect_to login_url, alert: "Invalid name/pw!"
     end
