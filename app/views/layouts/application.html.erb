@@ -20,7 +20,11 @@
       <%= link_to "ps_Art", '/', class: 'brand' %>
       <div class="nav-collapse collapse">
         <p class="navbar-text pull-right">
-          Logged in as Username
+          <% if session[:user_id] %>
+            Logged in as <%= session[:user_name] %> <%= link_to 'Log out', logout_path, method: :delete %>
+          <% else %>
+            <%= link_to 'Log in', login_url %>
+          <% end %>
         </p>
         <ul class="nav">
           <li><%= link_to 'Pieces', pieces_path %></li>
@@ -32,5 +36,8 @@
 <div class="container">
   <%= yield %>
 </div>
+
+<%= yield :scripts %>
+
 </body>
 </html>
